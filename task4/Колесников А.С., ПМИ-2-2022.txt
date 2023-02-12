@@ -1,0 +1,153 @@
+############ Задача 1. Аппроксимация функции #############
+import numpy as np
+from scipy import linalg
+import matplotlib.pyplot as plt
+
+
+# Исхоодная функция
+def f(x: np.ndarray) -> np.ndarray:
+    return np.sin(x/5) * np.exp(x/10) + 5*np.exp(-x/2)
+
+
+# Вычисление приближения через многочлен
+def f_approx(x: np.ndarray, w: np.ndarray) -> np.ndarray:
+    y = np.array([0]*x.size, dtype=np.float64)
+    for i in range(x.size):
+        n = 0
+        for wi in w:
+            y[i] += wi * x[i]**n
+            n += 1
+    return y
+
+
+# Возвращает матрицу коэффициентов A
+def get_A(x: np.ndarray) -> np.ndarray:
+    a = np.zeros((x.size, x.size))
+    for i in range(x.size):
+        for j in range(x.size):
+            a[i, j] = x[i]**j
+    return a
+
+
+if __name__ == '__main__':
+    # отрезок на котором функция f(x) определена
+    x_beg, x_end = 1, 15
+
+    # Многочлен 1 степени
+    x = np.linspace(x_beg, x_end, 2)
+    A = get_A(x)
+    b = f(x)
+    w_1 = linalg.solve(A, b)
+
+    # Многочлен 2 степени
+    x = np.linspace(x_beg, x_end, 3)
+    A = get_A(x)
+    b = f(x)
+    w_2 = linalg.solve(A, b)
+
+    # Многочлен 3 степени
+    x = np.linspace(x_beg, x_end, 4)
+    A = get_A(x)
+    b = f(x)
+    w_3 = linalg.solve(A, b)
+
+    # Вывод резултата в файл
+    with open('submission-2.txt', 'w') as fout:
+        fout.write('{} {} {} {}'.format(w_3[0], w_3[1], w_3[2], w_3[3]))
+
+    # Настройка рисунка
+    plt.figure(figsize=(10, 8))
+    plt.xlabel("Ось x")
+    plt.ylabel("Ось y")
+    plt.title("Аппроксимация", fontsize=20)
+    plt.xticks(np.arange(0, 15.1, 1))
+    plt.yticks(np.arange(0, 4, 0.25))
+    plt.grid()
+
+    x = np.linspace(1, 15, 1000, dtype=np.float64)
+    # Оригинальная функция
+    plt.plot(x, f(x), lw=2.3, label="y=sin(x/5)*exp(x/10) + 5*exp(-x/2)")
+    # Приближения
+    plt.plot(x, f_approx(x, w_1), color="orange",
+             linestyle=":", label="y={:.3f}+{:.3f}*x".format(w_1[0], w_1[1]))
+    plt.plot(x, f_approx(x, w_2), color="green",
+             linestyle="--", label="y={:.3f}+{:.3f}*x+{:.3f}*x^2".format(w_2[0], w_2[1], w_2[2]))
+    plt.plot(x, f_approx(x, w_3), color="red",
+             linestyle="-.", label="y={:.3f}+{:.3f}*x+{:.3f}*x^2+{:.3f}*x^3".format(w_3[0], w_3[1], w_3[2], w_3[3]))
+
+    # Отображение
+    plt.legend()
+    plt.show()
+
+
+
+################## Задача 2. Сравнение предложений ######################
+import numpy as np
+import re
+from scipy.spatial.distance import cosine
+
+
+# Читает текст из переданного файла
+def get_text(filename: str) -> str:
+    text = ""
+    with open(filename) as fin:
+        text = fin.read()
+    return text
+
+
+# Возвращает список уникальных слов в тексте
+def get_words(text: str) -> set:
+    return set(filter(lambda x: x != "", re.split(r"[^A-z]", text.lower())))
+
+
+# Назначает каждому слову уникальный индекс
+def get_tokens(words: list[str]) -> dict[str, int]:
+    tokens = dict()
+    i = 0
+    for word in words:
+        tokens[word] = i
+        i += 1
+    return tokens
+
+
+# Возвращает матрицу n*d, где n - количество предложений, а d - количество уникальных слов в тексте
+def get_matrix(text: str, sentence_count: int, tokens: dict[str, int]) -> np.ndarray:
+    matrix = np.zeros((sentence_count, len(tokens)))
+    i = 0
+
+    for sentence in text.split('\n'):
+        words = get_words(sentence)
+        for word in words:
+            matrix[i, tokens[word]] += 1
+        i += 1
+
+    return matrix
+
+
+# Возвращает номера двух ближайщих предложений к первому
+def find_closest_sentence(matrix) -> tuple[int]:
+    max_first = 0
+    sentence_first, sentence_second = 0, 0
+
+    for i in range(1, len(matrix)):
+        similarity = cosine(matrix[0], matrix[i])
+        if similarity >= max_first:
+            max_first = similarity
+            sentence_first, sentence_second = i, sentence_first
+
+    return (sentence_first, sentence_second)
+
+
+if __name__ == '__main__':
+    FILENAME = 'sentences.txt'
+    n = 22  # количество предложений
+
+    text = get_text(FILENAME)
+    words = get_words(text)
+    tokens = get_tokens(words)
+    matrix = get_matrix(text, n, tokens)
+
+    first, second = find_closest_sentence(matrix)
+
+    with open('submission-1.txt', 'w') as fout:
+        fout.write("{:d} {:d}".format(first, second))

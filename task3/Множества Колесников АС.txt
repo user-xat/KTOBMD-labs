@@ -1,0 +1,338 @@
+# A. Количество различных чисел
+if __name__ == '__main__':
+    print(len(set(input().split())))
+
+
+# B. Количество совпадающих
+if __name__ == '__main__':
+    first_set = set(input().split())
+    second_set = set(input().split())
+    print(len(first_set.intersection(second_set)))
+
+
+# C. Пересечение множеств
+if __name__ == '__main__':
+    first_set = set(map(int, input().split()))
+    second_set = set(map(int, input().split()))
+    intersect = sorted(first_set.intersection(second_set))
+    [print(x, end=" ") for x in intersect]
+    print()
+
+
+# D. Встречалось ли число раньше
+if __name__ == '__main__':
+    numbers = input().split()
+    already_seen = set()
+    for x in numbers:
+        if x in already_seen:
+            print("YES")
+        else:
+            already_seen.add(x)
+            print("NO")
+
+
+# E. Кубики
+def print_result(user_set: set) -> None:
+    print(len(user_set))
+    [print(x, end=" ") for x in sorted(user_set)]
+    print()
+if __name__ == '__main__':
+    FILENAME = 'input.txt'
+    anya_set = set()
+    borya_set = set()
+    with open(FILENAME) as file:
+        n, m = map(int, file.readline().split())
+        for _ in range(n):
+            anya_set.add(int(file.readline().strip()))
+        for _ in range(m):
+            borya_set.add(int(file.readline().strip()))
+
+    print_result(anya_set.intersection(borya_set))
+    print_result(anya_set.difference(borya_set))
+    print_result(borya_set.difference(anya_set))
+
+
+# F. Количество слов в тексте
+if __name__ == '__main__':
+    FILENAME = '!words_count.txt'
+    words_set = set()
+    with open(FILENAME) as file:
+        words_set.update(file.read().split())
+    print(len(words_set))
+
+
+# G. Угадай число
+if __name__ == '__main__':
+    n = int(input())
+    supposed_numbers = set()
+    waste_numbers = set()
+
+    while True:
+        question = input()
+        if question == 'HELP':
+            break
+        numbers = list(map(int, question.split()))
+
+        answer = input()
+        if answer == 'YES':
+            supposed_numbers.update(numbers)
+        else:
+            waste_numbers.update(numbers)
+
+    [print(x, end=" ")
+     for x in sorted(supposed_numbers.difference(waste_numbers))]
+    print()
+
+
+# H. Угадай число - 2
+if __name__ == '__main__':
+    n = int(input())
+    supposed_numbers = set()
+    waste_numbers = set()
+
+    while True:
+        question = input()
+        if question == 'HELP':
+            break
+        numbers = set(map(int, question.split()))
+
+        if len(numbers) <= n // 2:
+            waste_numbers.update(numbers)
+            print('NO')
+        else:
+            supposed_numbers.update(numbers)
+            print('YES')
+        n -= len(numbers)
+
+    [print(x, end=" ")
+     for x in sorted(supposed_numbers.difference(waste_numbers))]
+    print()
+
+
+# I. Полиглоты
+def print_result(user_set: set) -> None:
+    print(len(user_set))
+    [print(elem) for elem in user_set]
+
+if __name__ == '__main__':
+    n = int(input())
+    everybody_knows = set()
+    someone_knows = set()
+
+    for _ in range(n):
+        lang_count = int(input())
+        lang = set()
+        for _ in range(lang_count):
+            lang.add(input())
+
+        someone_knows.update(lang)
+        if len(everybody_knows) == 0:
+            everybody_knows.update(lang)
+        else:
+            everybody_knows.intersection_update(lang)
+
+    print_result(everybody_knows)
+    print_result(someone_knows)
+
+
+# J. Забастовки
+if __name__ == '__main__':
+    n, k = map(int, input().split())
+    strikes = set()
+
+    for _ in range(k):
+        a, b = map(int, input().split())
+        d = a
+        while d <= n:
+            if not (d % 7 == 0 or (d+1) % 7 == 0):
+                strikes.add(d)
+            d += b
+
+    print(len(strikes))
+
+
+# K. Номер появления слова
+if __name__ == '__main__':
+    FILENAME = 'input.txt'
+    words_count_dict = dict()
+
+    with open(FILENAME) as file:
+        for line in file:
+            for word in line.split():
+                if word in words_count_dict:
+                    words_count_dict[word] += 1
+                else:
+                    words_count_dict[word] = 0
+                print(words_count_dict[word], end=" ")
+        print()
+
+
+# L. Словарь синонимов
+if __name__ == '__main__':
+    n = int(input())
+    synonyms_dict = dict()
+
+    for _ in range(n):
+        word1, word2 = input().split()
+        synonyms_dict[word1] = word2
+        synonyms_dict[word2] = word1
+
+    word = input()
+    print(synonyms_dict[word])
+
+
+# M. Выборы в США
+if __name__ == '__main__':
+    FILENAME = 'input.txt'
+    applicants = dict()
+
+    with open(FILENAME) as file:
+        for line in file:
+            surname, votes = line.split()
+            applicants[surname] = applicants.get(surname, 0) + int(votes)
+
+    for surname in sorted(applicants.keys()):
+        print(surname, applicants[surname])
+
+
+# N. Самое частое слово
+if __name__ == '__main__':
+    FILENAME = 'input.txt'
+    words_count_dict = dict()
+
+    with open(FILENAME) as file:
+        for line in file:
+            for word in line.split():
+                words_count_dict[word] = words_count_dict.get(word, 0) + 1
+
+    print(sorted(words_count_dict.items(),
+          key=lambda x: (-x[1], x[0]))[0][0])
+
+
+# O. Права доступа
+if __name__ == '__main__':
+    FILENAME = 'input.txt'
+    files_dict = dict()
+
+    with open(FILENAME) as fin:
+        n = int(fin.readline().strip())
+        for _ in range(n):
+            file_and_rights = fin.readline().split()
+            files_dict[file_and_rights[0]] = file_and_rights[1:]
+
+        m = int(fin.readline().strip())
+        for _ in range(m):
+            operation, file = fin.readline().split()
+            if operation == 'read':
+                if 'R' in files_dict[file]:
+                    print('OK')
+                else:
+                    print("Access denied")
+            elif operation == 'write':
+                if 'W' in files_dict[file]:
+                    print('OK')
+                else:
+                    print("Access denied")
+            elif operation == 'execute':
+                if 'X' in files_dict[file]:
+                    print('OK')
+                else:
+                    print("Access denied")
+
+
+# P. Частотный анализ
+if __name__ == '__main__':
+    FILENAME = 'input.txt'
+    words_frequency = dict()
+
+    with open(FILENAME) as fin:
+        for line in fin:
+            for word in line.split():
+                words_frequency[word] = words_frequency.get(word, 0) + 1
+
+    [print(word[0]) for word in sorted(
+        words_frequency.items(), key=lambda x: (-x[1], x[0]))]
+
+
+# Q. Страны и города
+if __name__ == '__main__':
+    FILENAME = 'input.txt'
+    cities_dict = dict()
+
+    with open(FILENAME) as fin:
+        n = int(fin.readline().strip())
+        for _ in range(n):
+            country_and_cities = fin.readline().split()
+            country = country_and_cities[0]
+            for city in country_and_cities[1:]:
+                cities_dict[city] = country
+
+        m = int(fin.readline().strip())
+        for _ in range(m):
+            city = fin.readline().strip()
+            print(cities_dict[city])
+
+
+# R. Банковские счета
+FILENAME = 'input.txt'
+clients_info = dict()
+
+def deposit(name: str, sum: int) -> None:
+    clients_info[name] = clients_info.get(name, 0) + sum
+
+def withdraw(name: str, sum: int) -> None:
+    clients_info[name] = clients_info.get(name, 0) - sum
+
+def transfer(name1: str, name2: str, sum: int) -> None:
+    clients_info[name1] = clients_info.get(name1, 0) - sum
+    clients_info[name2] = clients_info.get(name2, 0) + sum
+
+def balance(name: str) -> None:
+    if name in clients_info:
+        print(clients_info[name])
+    else:
+        print('ERROR')
+
+def income(p: int) -> None:
+    for name in clients_info.keys():
+        if clients_info[name] > 0:
+            clients_info[name] = int(
+                clients_info[name]*p/100) + clients_info[name]
+
+if __name__ == '__main__':
+    with open(FILENAME) as fin:
+        for line in fin:
+            operation_data = line.split()
+            operation = operation_data[0]
+            if operation == 'DEPOSIT':
+                deposit(operation_data[1], int(operation_data[2]))
+            elif operation == 'WITHDRAW':
+                withdraw(operation_data[1], int(operation_data[2]))
+            elif operation == 'TRANSFER':
+                transfer(operation_data[1],
+                         operation_data[2], int(operation_data[3]))
+            elif operation == 'BALANCE':
+                balance(operation_data[1])
+            elif operation == 'INCOME':
+                income(int(operation_data[1]))
+
+
+# S. Англо-латинский словарь
+if __name__ == '__main__':
+    latin_english_dict = dict()
+
+    n = int(input().strip())
+    for _ in range(n):
+        english_word, latin_words = input().split(sep=" - ")
+        latin_words = latin_words.split(sep=", ")
+        for latin_word in latin_words:
+            if latin_word in latin_english_dict:
+                latin_english_dict[latin_word].append(english_word)
+            else:
+                latin_english_dict[latin_word] = [english_word]
+
+    print(len(latin_english_dict))
+    for word in sorted(latin_english_dict.keys()):
+        latin_english_dict[word].sort()
+        print("{} - {}".format(word,
+              ", ".join(latin_english_dict[word])))

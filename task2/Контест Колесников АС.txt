@@ -1,0 +1,104 @@
+# A. Камень, ножницы, бумага
+first_player, second_player = int(input()), int(input())
+if first_player == second_player:
+    print('draw')
+elif first_player+1 == second_player or (first_player+1) % 3 == second_player:
+    print('first')
+else:
+    print('second')
+
+
+# B. Приглашения и конверты
+a, b = int(input()), int(input())
+c, d = int(input()), int(input())
+if a <= c and b <= d or a <= d and b <= c:
+    print('YES')
+else:
+    print('NO')
+
+
+# C. Количество делителей
+n = int(input())
+count = 0
+for i in range(1, n+1):
+    if n % i == 0:
+        count += 1
+print(count)
+
+
+# E. Сколько двоек в числе?
+print(input().count('2'))
+
+
+# G. Миллионер
+k = int(input())
+res = '1'
+i = 1
+while i < k:
+    i += len(res)
+    res += '0'
+if i == k:
+    print('1')
+else:
+    print('0')
+
+
+# H. Вклад
+n, k = map(int, input().split())
+double = n * 2
+years = 0
+while n < double:
+    n += n*k/100
+    years += 1
+print(years)
+
+
+# I. Поменяй два слова местами
+words = input().split()
+words.reverse()
+print(" ".join(words))
+
+
+# J. Сколько коротких слов?
+with open('input.txt') as fin:
+    print(len(list(filter(lambda x: len(x) <= 3, fin.read().split()))))
+
+
+# K. Самое длинное слово
+print(len(sorted(input().split(), key=lambda x: len(x), reverse=True)[0]))
+
+
+# L. Разные четные
+n = input()
+nums = list(map(int, input().split()))
+sum_even_index = 0
+for i in range(1, len(nums), 2):
+    sum_even_index += nums[i]
+
+sum_even_number = 0
+for i in range(len(nums)):
+    if nums[i] % 2 == 0:
+        sum_even_number += nums[i]
+
+print(sum_even_index, sum_even_number)
+
+
+# M. Равен сумме соседей
+n = input()
+nums = list(map(int, input().split()))
+for x in range(1, len(nums)-1):
+    if nums[x] == nums[x-1] + nums[x+1]:
+        print(nums[x], end=" ")
+print()
+
+
+# N. Выборы президента
+n = int(input())
+elements = input().split()
+candidate, votes = 0, 0
+for i in range(len(elements)):
+    count = elements.count(elements[i])
+    if count > votes:
+        votes = count
+        candidate = elements[i]
+print(candidate)

@@ -1,0 +1,7 @@
+6
+apple - malum, pomum, popula
+fruit - baca, bacca, popum
+punishment - malum, multa
+shop - taberna, officina, obficina
+tavern - taberna, caupona
+cottage - casa, taberna, tugurium
